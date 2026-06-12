@@ -19,7 +19,6 @@
             min-height: 100vh;
         }
 
-        /* 莫兰迪色系变量 */
         :root {
             --bg: #F5F2EB;
             --card-bg: #FFFFFF;
@@ -29,7 +28,6 @@
             --text: #4A4A4A;
             --text-light: #8A8A8A;
             --border: #E8E4DC;
-            --accent: #B5C1B4;
             --like: #D4A5A5;
         }
 
@@ -61,7 +59,6 @@
             font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: 12px;
-            letter-spacing: -0.5px;
             color: var(--primary);
         }
 
@@ -79,12 +76,10 @@
             font-family: 'Inter', sans-serif;
             margin-bottom: 18px;
             outline: none;
-            transition: all 0.2s;
         }
 
         .login-input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(154, 140, 125, 0.1);
         }
 
         .login-btn {
@@ -97,12 +92,6 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .login-btn:hover {
-            background: var(--primary-dark);
-            transform: scale(1.01);
         }
 
         .error-msg {
@@ -125,14 +114,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
             border: 1px solid var(--border);
         }
 
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
-            letter-spacing: -1px;
             color: var(--primary);
         }
 
@@ -148,11 +135,6 @@
             cursor: pointer;
             padding: 8px;
             border-radius: 12px;
-            transition: background 0.2s;
-        }
-
-        .settings-btn:hover, .cloud-btn:hover {
-            background: var(--bg);
         }
 
         .date-section {
@@ -163,7 +145,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
             border: 1px solid var(--border);
         }
 
@@ -177,7 +158,6 @@
             font-size: 0.85rem;
             color: var(--text-light);
             margin-left: 10px;
-            font-weight: 400;
         }
 
         .edit-date-btn {
@@ -195,7 +175,6 @@
             border-radius: 24px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
             border: 1px solid var(--border);
         }
 
@@ -213,12 +192,6 @@
             cursor: pointer;
             padding: 8px 12px;
             border-radius: 30px;
-            transition: all 0.2s;
-        }
-
-        .emoji-btn:hover {
-            background: var(--secondary);
-            transform: scale(1.05);
         }
 
         .new-status-input {
@@ -230,7 +203,6 @@
             font-family: 'Inter', sans-serif;
             resize: vertical;
             outline: none;
-            transition: all 0.2s;
         }
 
         .new-status-input:focus {
@@ -252,11 +224,6 @@
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .post-status-btn:hover {
-            background: var(--primary-dark);
         }
 
         .status-card {
@@ -264,13 +231,7 @@
             border-radius: 24px;
             margin-bottom: 20px;
             overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
             border: 1px solid var(--border);
-            transition: transform 0.2s;
-        }
-
-        .status-card:hover {
-            transform: translateY(-2px);
         }
 
         .status-header {
@@ -284,7 +245,6 @@
         .status-time {
             font-size: 0.8rem;
             color: var(--text-light);
-            font-weight: 500;
         }
 
         .status-actions {
@@ -295,22 +255,11 @@
         .edit-status-btn, .delete-status-btn {
             background: none;
             border: none;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
             color: var(--text-light);
             padding: 4px 8px;
             border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .edit-status-btn:hover {
-            background: var(--bg);
-            color: var(--primary);
-        }
-
-        .delete-status-btn:hover {
-            background: var(--bg);
-            color: var(--like);
         }
 
         .status-content {
@@ -345,7 +294,6 @@
             border: none;
             border-radius: 30px;
             cursor: pointer;
-            font-weight: 500;
         }
 
         .edit-save-btn {
@@ -376,7 +324,6 @@
             color: var(--text-light);
             cursor: pointer;
             padding: 6px 0;
-            transition: all 0.2s;
         }
 
         .stat-btn.liked {
@@ -479,7 +426,6 @@
             border-radius: 12px;
             margin-bottom: 15px;
             outline: none;
-            font-family: 'Inter', sans-serif;
         }
 
         .cloud-card button, .settings-card button, .date-modal-content button {
@@ -539,7 +485,6 @@
             border-radius: 30px;
             color: var(--text-light);
             cursor: pointer;
-            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -617,7 +562,7 @@
         <button class="btn-primary" onclick="testAndSaveCloud()">测试并保存</button>
         <button class="btn-secondary" onclick="syncFromCloud()">手动同步</button>
         <button class="btn-secondary" onclick="closeCloudModal()">关闭</button>
-        <div id="cloudStatus" style="font-size:0.75rem; margin-top:10px; color:var(--text-light);"></div>
+        <div id="cloudStatus" style="font-size:0.75rem; margin-top:10px;"></div>
     </div>
 </div>
 
@@ -633,7 +578,6 @@
 </div>
 
 <script>
-    // 存储KEY
     const STORAGE_KEY = 'agit_diary_data';
     const PASSWORD_KEY = 'agit_password';
     const CLOUD_CONFIG_KEY = 'agit_cloud_config';
@@ -644,14 +588,12 @@
     let isSyncing = false;
     let editingStatusId = null;
 
-    // 添加emoji到输入框
     function addEmoji(emoji) {
         const input = document.getElementById('newStatusInput');
         input.value += emoji;
         input.focus();
     }
 
-    // WebDAV配置
     function getCloudConfig() {
         const saved = localStorage.getItem(CLOUD_CONFIG_KEY);
         return saved ? JSON.parse(saved) : null;
@@ -663,9 +605,7 @@
         const fullUrl = `${config.url.replace(/\/$/, '')}${path}`;
         const options = {
             method: method,
-            headers: {
-                'Authorization': 'Basic ' + btoa(`${config.user}:${config.pass}`)
-            }
+            headers: { 'Authorization': 'Basic ' + btoa(`${config.user}:${config.pass}`) }
         };
         if (content !== null) {
             options.headers['Content-Type'] = 'application/json';
@@ -730,14 +670,13 @@
                 showStatus('☁️ 配置成功，正在同步...', 'success');
                 await syncFromCloud();
             } else {
-                document.getElementById('cloudStatus').innerHTML = '❌ 认证失败，检查账号和密码';
+                document.getElementById('cloudStatus').innerHTML = '❌ 认证失败';
             }
         } catch(e) {
             document.getElementById('cloudStatus').innerHTML = `❌ 失败: ${e.message}`;
         }
     }
 
-    // 数据管理
     function loadAllData() {
         const stored = localStorage.getItem(STORAGE_KEY);
         allData = stored ? JSON.parse(stored) : {};
@@ -760,7 +699,6 @@
         saveAllData();
     }
 
-    // 状态操作
     function addStatus() {
         const input = document.getElementById('newStatusInput');
         const content = input.value.trim();
@@ -862,7 +800,6 @@
         }
     }
 
-    // 渲染
     function renderStatusList() {
         const dayData = getDayData();
         const statuses = dayData.statuses || [];
@@ -881,7 +818,7 @@
                             <span class="status-time">📝 ${status.time}</span>
                             <div class="status-actions">
                                 <button class="edit-status-btn" onclick="saveEditStatus(${status.id})">💾 保存</button>
-                                <button class="delete-status-btn" onclick="cancelEdit()">❌ 取消</button>
+                                <button class="edit-status-btn" onclick="cancelEdit()">❌ 取消</button>
                             </div>
                         </div>
                         <div class="status-content">
@@ -985,7 +922,6 @@
         setTimeout(() => div.style.display = 'none', 2500);
     }
 
-    // 密码系统
     function getStoredPassword() {
         const pwd = localStorage.getItem(PASSWORD_KEY);
         return pwd === null ? DEFAULT_PASSWORD : pwd;
@@ -1049,4 +985,9 @@
 
     document.getElementById('dateModal').addEventListener('click', e => { if(e.target === document.getElementById('dateModal')) closeDateModal(); });
     document.getElementById('cloudModal').addEventListener('click', e => { if(e.target === document.getElementById('cloudModal')) closeCloudModal(); });
-    document.getElementById('settingsModal').addEventListener('click', e => { if(e.target === document.getElementById('
+    document.getElementById('settingsModal').addEventListener('click', e => { if(e.target === document.getElementById('settingsModal')) closeSettings(); });
+
+    checkAutoLogin();
+</script>
+</body>
+</html>
