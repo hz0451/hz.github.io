@@ -191,7 +191,7 @@
     // ========== GitHub 配置 - 请在这里填写你的信息 ==========
     const GITHUB_USERNAME = "hz0451";  // 替换成你的GitHub用户名
     const GITHUB_REPO = "hz.github.io";  // 替换成你的仓库名
-    const GITHUB_TOKEN = "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";  // 替换成你生成的Token
+    const GITHUB_TOKEN = "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;  // 替换成你生成的Token
     const DATA_FILE = "agit_data.json";
     // =====================================================
 
@@ -225,7 +225,7 @@
 
     // 上传数据到 GitHub
     async function uploadToGitHub() {
-        if (!GITHUB_TOKEN || GITHUB_TOKEN === "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") {
+        if (!GITHUB_TOKEN || GITHUB_TOKEN === "你的Token") {
             showStatus('请先在代码中配置 GitHub Token', 'error');
             return false;
         }
