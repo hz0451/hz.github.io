@@ -6,582 +6,81 @@
     <title>Agit | 你的私人日记</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #F5F2EB;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        :root {
-            --bg: #F5F2EB;
-            --card-bg: #FFFFFF;
-            --primary: #9A8C7D;
-            --primary-dark: #7F6E5D;
-            --secondary: #C5C0B3;
-            --text: #4A4A4A;
-            --text-light: #8A8A8A;
-            --border: #E8E4DC;
-            --like: #D4A5A5;
-        }
-
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(90, 80, 70, 0.92);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .login-card {
-            background: var(--card-bg);
-            border-radius: 32px;
-            padding: 48px 36px;
-            width: 90%;
-            max-width: 420px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-
-        .login-card h2 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--primary);
-        }
-
-        .login-card p {
-            color: var(--text-light);
-            margin-bottom: 32px;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 1.5px solid var(--border);
-            border-radius: 16px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            margin-bottom: 18px;
-            outline: none;
-        }
-
-        .login-input:focus {
-            border-color: var(--primary);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 40px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .error-msg {
-            color: var(--like);
-            font-size: 0.85rem;
-            margin-top: 12px;
-        }
-
-        .main-content {
-            max-width: 680px;
-            margin: 0 auto;
-            display: none;
-        }
-
-        .navbar {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 16px 24px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--border);
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .settings-btn, .cloud-btn {
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 12px;
-        }
-
-        .date-section {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--border);
-        }
-
-        .date-info {
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: var(--text);
-        }
-
-        .date-weekday {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-left: 10px;
-        }
-
-        .edit-date-btn {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 30px;
-            background: var(--bg);
-        }
-
-        .new-status-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .input-toolbar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
-            align-items: center;
-            position: relative;
-            flex-wrap: wrap;
-        }
-
-        .emoji-picker-btn, .attach-btn {
-            background: var(--bg);
-            border: none;
-            font-size: 0.9rem;
-            cursor: pointer;
-            padding: 8px 16px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--text);
-        }
-
-        .emoji-dropdown {
-            position: absolute;
-            top: 45px;
-            left: 0;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            padding: 15px;
-            width: 300px;
-            z-index: 100;
-            border: 1px solid var(--border);
-            display: none;
-            max-height: 350px;
-            overflow-y: auto;
-        }
-
-        .emoji-dropdown.show {
-            display: block;
-        }
-
-        .emoji-category {
-            margin-bottom: 12px;
-        }
-
-        .emoji-category-title {
-            font-size: 0.7rem;
-            color: var(--text-light);
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .emoji-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-        }
-
-        .emoji-item {
-            font-size: 1.3rem;
-            cursor: pointer;
-            padding: 5px;
-            text-align: center;
-            border-radius: 10px;
-            transition: background 0.2s;
-        }
-
-        .emoji-item:hover {
-            background: var(--bg);
-        }
-
-        .new-status-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 20px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            resize: vertical;
-            outline: none;
-        }
-
-        .new-status-input:focus {
-            border-color: var(--primary);
-        }
-
-        .media-preview {
-            margin-top: 12px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .media-item {
-            position: relative;
-            display: inline-block;
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 8px;
-        }
-
-        .media-item video, .media-item audio {
-            max-width: 200px;
-            border-radius: 12px;
-        }
-
-        .remove-media {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--like);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .upload-progress {
-            font-size: 0.7rem;
-            color: var(--primary);
-            margin-left: 10px;
-        }
-
-        .new-status-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .post-status-btn {
-            padding: 10px 24px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .status-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .status-header {
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .status-time {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-
-        .status-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .edit-status-btn, .delete-status-btn {
-            background: none;
-            border: none;
-            font-size: 0.9rem;
-            cursor: pointer;
-            color: var(--text-light);
-            padding: 4px 8px;
-            border-radius: 8px;
-        }
-
-        .status-content {
-            padding: 20px;
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text);
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        .status-media {
-            padding: 0 20px 20px 20px;
-        }
-
-        .status-media video {
-            max-width: 100%;
-            border-radius: 16px;
-        }
-
-        .status-media audio {
-            width: 100%;
-        }
-
-        .edit-status-textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1.5px solid var(--primary);
-            border-radius: 16px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            resize: vertical;
-            outline: none;
-            margin-bottom: 12px;
-        }
-
-        .status-stats {
-            padding: 12px 20px;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            gap: 24px;
-        }
-
-        .stat-btn {
-            background: none;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            color: var(--text-light);
-            cursor: pointer;
-            padding: 6px 0;
-        }
-
-        .stat-btn.liked {
-            color: var(--like);
-        }
-
-        .comments-section {
-            padding: 16px 20px;
-            background: var(--bg);
-        }
-
-        .comment-item {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 14px;
-            font-size: 0.85rem;
-        }
-
-        .comment-name {
-            font-weight: 600;
-            color: var(--text);
-            min-width: 55px;
-        }
-
-        .comment-text {
-            color: var(--text);
-            flex: 1;
-            word-break: break-word;
-        }
-
-        .comment-time {
-            font-size: 0.7rem;
-            color: var(--text-light);
-        }
-
-        .add-comment {
-            display: flex;
-            gap: 12px;
-            margin-top: 14px;
-        }
-
-        .add-comment input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            outline: none;
-            font-size: 0.85rem;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .add-comment button {
-            background: none;
-            border: none;
-            color: var(--primary);
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .empty-status {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-light);
-            background: var(--card-bg);
-            border-radius: 24px;
-            border: 1px solid var(--border);
-        }
-
-        .cloud-modal, .settings-modal, .date-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(90, 80, 70, 0.5);
-            z-index: 1002;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cloud-card, .settings-card, .date-modal-content {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 30px;
-            width: 90%;
-            max-width: 380px;
-        }
-
-        .cloud-card h3, .settings-card h3, .date-modal-content h4 {
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-            color: var(--primary);
-        }
-
-        .cloud-card input, .settings-card input, .date-modal-content input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 15px;
-            outline: none;
-        }
-
-        .cloud-card button, .settings-card button, .date-modal-content button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--like);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        .status-msg {
-            text-align: center;
-            padding: 10px;
-            border-radius: 12px;
-            margin: 10px 18px;
-            font-size: 0.8rem;
-        }
-
-        .status-success {
-            background: #D9E0D4;
-            color: #5A6B4A;
-        }
-
-        .status-error {
-            background: #E8D4D4;
-            color: #A55A5A;
-        }
-
-        .status-info {
-            background: #D4E0E8;
-            color: #5A6B7A;
-        }
-
-        .logout-btn {
-            width: calc(100% - 36px);
-            margin: 0 18px 20px;
-            padding: 10px;
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            color: var(--text-light);
-            cursor: pointer;
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .sync-badge {
-            font-size: 0.7rem;
-            color: var(--text-light);
-            margin-left: 10px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #F5F2EB; font-family: 'Inter', sans-serif; padding: 20px; min-height: 100vh; }
+        :root { --bg: #F5F2EB; --card-bg: #FFFFFF; --primary: #9A8C7D; --primary-dark: #7F6E5D; --secondary: #C5C0B3; --text: #4A4A4A; --text-light: #8A8A8A; --border: #E8E4DC; --like: #D4A5A5; }
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(90,80,70,0.92); backdrop-filter: blur(12px); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: var(--card-bg); border-radius: 32px; padding: 48px 36px; width: 90%; max-width: 420px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .login-card h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; color: var(--primary); }
+        .login-card p { color: var(--text-light); margin-bottom: 32px; }
+        .login-input { width: 100%; padding: 14px 18px; border: 1.5px solid var(--border); border-radius: 16px; font-size: 1rem; margin-bottom: 18px; outline: none; }
+        .login-input:focus { border-color: var(--primary); }
+        .login-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 40px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+        .error-msg { color: var(--like); font-size: 0.85rem; margin-top: 12px; }
+        .main-content { max-width: 680px; margin: 0 auto; display: none; }
+        .navbar { background: var(--card-bg); border-radius: 24px; padding: 16px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .nav-buttons { display: flex; gap: 12px; }
+        .settings-btn, .cloud-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 8px; border-radius: 12px; }
+        .date-section { background: var(--card-bg); border-radius: 24px; padding: 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+        .date-info { font-weight: 600; font-size: 1.2rem; color: var(--text); }
+        .date-weekday { font-size: 0.85rem; color: var(--text-light); margin-left: 10px; }
+        .edit-date-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 8px 12px; border-radius: 30px; background: var(--bg); }
+        .new-status-card { background: var(--card-bg); border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .input-toolbar { display: flex; gap: 12px; margin-bottom: 12px; align-items: center; position: relative; flex-wrap: wrap; }
+        .emoji-picker-btn, .attach-btn { background: var(--bg); border: none; font-size: 0.9rem; cursor: pointer; padding: 8px 16px; border-radius: 30px; display: flex; align-items: center; gap: 6px; color: var(--text); }
+        .emoji-dropdown { position: absolute; top: 45px; left: 0; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 15px; width: 300px; z-index: 100; border: 1px solid var(--border); display: none; max-height: 350px; overflow-y: auto; }
+        .emoji-dropdown.show { display: block; }
+        .emoji-category { margin-bottom: 12px; }
+        .emoji-category-title { font-size: 0.7rem; color: var(--text-light); margin-bottom: 8px; font-weight: 500; }
+        .emoji-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .emoji-item { font-size: 1.3rem; cursor: pointer; padding: 5px; text-align: center; border-radius: 10px; transition: background 0.2s; }
+        .emoji-item:hover { background: var(--bg); }
+        .new-status-input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 20px; font-size: 1rem; resize: vertical; outline: none; }
+        .new-status-input:focus { border-color: var(--primary); }
+        .media-preview { margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .media-item { position: relative; display: inline-block; background: var(--bg); border-radius: 12px; padding: 8px; }
+        .media-item video, .media-item audio { max-width: 200px; border-radius: 12px; }
+        .remove-media { position: absolute; top: -8px; right: -8px; background: var(--like); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 12px; }
+        .upload-progress { font-size: 0.7rem; color: var(--primary); margin-left: 10px; }
+        .new-status-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px; }
+        .post-status-btn { padding: 10px 24px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; }
+        .status-card { background: var(--card-bg); border-radius: 24px; margin-bottom: 20px; overflow: hidden; border: 1px solid var(--border); }
+        .status-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .status-time { font-size: 0.8rem; color: var(--text-light); }
+        .status-actions { display: flex; gap: 8px; }
+        .edit-status-btn, .delete-status-btn { background: none; border: none; font-size: 0.9rem; cursor: pointer; color: var(--text-light); padding: 4px 8px; border-radius: 8px; }
+        .status-content { padding: 20px; font-size: 1rem; line-height: 1.6; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+        .status-media { padding: 0 20px 20px 20px; }
+        .status-media video { max-width: 100%; border-radius: 16px; }
+        .status-media audio { width: 100%; }
+        .edit-status-textarea { width: 100%; padding: 14px 16px; border: 1.5px solid var(--primary); border-radius: 16px; font-size: 1rem; resize: vertical; outline: none; margin-bottom: 12px; }
+        .status-stats { padding: 12px 20px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: flex; gap: 24px; }
+        .stat-btn { background: none; border: none; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-light); cursor: pointer; padding: 6px 0; }
+        .stat-btn.liked { color: var(--like); }
+        .comments-section { padding: 16px 20px; background: var(--bg); }
+        .comment-item { display: flex; gap: 12px; margin-bottom: 14px; font-size: 0.85rem; }
+        .comment-name { font-weight: 600; color: var(--text); min-width: 55px; }
+        .comment-text { color: var(--text); flex: 1; word-break: break-word; }
+        .comment-time { font-size: 0.7rem; color: var(--text-light); }
+        .add-comment { display: flex; gap: 12px; margin-top: 14px; }
+        .add-comment input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 30px; outline: none; font-size: 0.85rem; }
+        .add-comment button { background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer; }
+        .empty-status { text-align: center; padding: 60px 20px; color: var(--text-light); background: var(--card-bg); border-radius: 24px; border: 1px solid var(--border); }
+        .cloud-modal, .settings-modal, .date-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(90,80,70,0.5); z-index: 1002; align-items: center; justify-content: center; }
+        .cloud-card, .settings-card, .date-modal-content { background: var(--card-bg); border-radius: 24px; padding: 30px; width: 90%; max-width: 380px; }
+        .cloud-card h3, .settings-card h3, .date-modal-content h4 { margin-bottom: 20px; font-size: 1.3rem; color: var(--primary); }
+        .cloud-card input, .settings-card input, .date-modal-content input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 15px; outline: none; }
+        .cloud-card button, .settings-card button, .date-modal-content button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: var(--like); color: white; }
+        .btn-secondary { background: var(--bg); color: var(--text); }
+        .status-msg { text-align: center; padding: 10px; border-radius: 12px; margin: 10px 18px; font-size: 0.8rem; }
+        .status-success { background: #D9E0D4; color: #5A6B4A; }
+        .status-error { background: #E8D4D4; color: #A55A5A; }
+        .status-info { background: #D4E0E8; color: #5A6B7A; }
+        .logout-btn { width: calc(100% - 36px); margin: 0 18px 20px; padding: 10px; background: none; border: 1px solid var(--border); border-radius: 30px; color: var(--text-light); cursor: pointer; }
+        .file-input { display: none; }
     </style>
 </head>
 <body>
@@ -628,7 +127,6 @@
                         <div class="emoji-item" onclick="addEmoji('💪')">💪</div><div class="emoji-item" onclick="addEmoji('🌸')">🌸</div>
                         <div class="emoji-item" onclick="addEmoji('🌈')">🌈</div><div class="emoji-item" onclick="addEmoji('⭐')">⭐</div>
                         <div class="emoji-item" onclick="addEmoji('🔥')">🔥</div><div class="emoji-item" onclick="addEmoji('💎')">💎</div>
-                        <div class="emoji-item" onclick="addEmoji('🎈')">🎈</div><div class="emoji-item" onclick="addEmoji('🍕')">🍕</div>
                     </div>
                 </div>
                 <div class="emoji-category">
@@ -640,11 +138,10 @@
                         <div class="emoji-item" onclick="addEmoji('👿')">👿</div><div class="emoji-item" onclick="addEmoji('🤡')">🤡</div>
                         <div class="emoji-item" onclick="addEmoji('😤')">😤</div><div class="emoji-item" onclick="addEmoji('😩')">😩</div>
                         <div class="emoji-item" onclick="addEmoji('😫')">😫</div><div class="emoji-item" onclick="addEmoji('💔')">💔</div>
-                        <div class="emoji-item" onclick="addEmoji('🖤')">🖤</div><div class="emoji-item" onclick="addEmoji('😱')">😱</div>
                     </div>
                 </div>
                 <div class="emoji-category">
-                    <div class="emoji-category-title">🌧️ 天气/其他</div>
+                    <div class="emoji-category-title">🌧️ 天气</div>
                     <div class="emoji-grid">
                         <div class="emoji-item" onclick="addEmoji('☀️')">☀️</div><div class="emoji-item" onclick="addEmoji('☁️')">☁️</div>
                         <div class="emoji-item" onclick="addEmoji('🌧️')">🌧️</div><div class="emoji-item" onclick="addEmoji('⛈️')">⛈️</div>
@@ -652,7 +149,6 @@
                         <div class="emoji-item" onclick="addEmoji('☔')">☔</div><div class="emoji-item" onclick="addEmoji('⚡')">⚡</div>
                         <div class="emoji-item" onclick="addEmoji('💨')">💨</div><div class="emoji-item" onclick="addEmoji('🌙')">🌙</div>
                         <div class="emoji-item" onclick="addEmoji('🌞')">🌞</div><div class="emoji-item" onclick="addEmoji('🐱')">🐱</div>
-                        <div class="emoji-item" onclick="addEmoji('🐶')">🐶</div><div class="emoji-item" onclick="addEmoji('🌸')">🌸</div>
                     </div>
                 </div>
             </div>
@@ -665,7 +161,6 @@
     </div>
 
     <div id="statusList"></div>
-
     <button class="logout-btn" onclick="logout()">🚪 退出登录</button>
     <div id="statusMsg" style="display: none;"></div>
 </div>
@@ -716,7 +211,7 @@
     let allData = {};
     let isSyncing = false;
     let editingStatusId = null;
-    let pendingMedia = { type: null, file: null, previewUrl: null, cloudPath: null };
+    let pendingMedia = { type: null, file: null, previewUrl: null };
 
     function toggleEmojiPicker() {
         const dropdown = document.getElementById('emojiDropdown');
@@ -736,81 +231,22 @@
         input.focus();
     }
 
-    async function handleMediaSelect(input, type) {
+    function handleMediaSelect(input, type) {
         const file = input.files[0];
         if (!file) return;
-        
         const previewUrl = URL.createObjectURL(file);
-        pendingMedia = { type: type, file: file, previewUrl: previewUrl, cloudPath: null };
-        showMediaPreview();
-    }
-
-    function showMediaPreview() {
+        pendingMedia = { type: type, file: file, previewUrl: previewUrl };
         const preview = document.getElementById('mediaPreview');
-        if (pendingMedia.type === 'video') {
-            preview.innerHTML = `
-                <div class="media-item">
-                    <video src="${pendingMedia.previewUrl}" controls style="max-width:200px; border-radius:12px;"></video>
-                    <button class="remove-media" onclick="clearPendingMedia()">×</button>
-                    <div class="upload-progress" id="uploadProgress">等待上传...</div>
-                </div>
-            `;
-        } else if (pendingMedia.type === 'audio') {
-            preview.innerHTML = `
-                <div class="media-item">
-                    <audio src="${pendingMedia.previewUrl}" controls></audio>
-                    <button class="remove-media" onclick="clearPendingMedia()">×</button>
-                    <div class="upload-progress" id="uploadProgress">等待上传...</div>
-                </div>
-            `;
+        if (type === 'video') {
+            preview.innerHTML = `<div class="media-item"><video src="${previewUrl}" controls style="max-width:200px; border-radius:12px;"></video><button class="remove-media" onclick="clearPendingMedia()">×</button></div>`;
+        } else {
+            preview.innerHTML = `<div class="media-item"><audio src="${previewUrl}" controls></audio><button class="remove-media" onclick="clearPendingMedia()">×</button></div>`;
         }
-    }
-
-    function updateUploadProgress(msg) {
-        const progressDiv = document.getElementById('uploadProgress');
-        if (progressDiv) progressDiv.innerText = msg;
-    }
-
-    async function uploadMediaToCloud() {
-        if (!pendingMedia.file) return null;
-        
-        const config = getCloudConfig();
-        if (!config) {
-            showStatus('请先配置坚果云才能上传媒体文件', 'error');
-            return null;
-        }
-        
-        updateUploadProgress('正在上传到坚果云...');
-        
-        const fileName = `media/${Date.now()}_${pendingMedia.file.name}`;
-        const reader = new FileReader();
-        
-        return new Promise((resolve, reject) => {
-            reader.onload = async function(e) {
-                try {
-                    const base64Data = e.target.result.split(',')[1];
-                    const response = await webdavRequest('PUT', `/${fileName}`, base64Data, true);
-                    if (response.status === 201 || response.status === 204) {
-                        updateUploadProgress('上传完成！');
-                        const cloudUrl = `${config.url.replace(/\/$/, '')}/${fileName}`;
-                        resolve(cloudUrl);
-                    } else {
-                        reject(new Error('上传失败'));
-                    }
-                } catch(err) {
-                    reject(err);
-                }
-            };
-            reader.onerror = () => reject(new Error('读取文件失败'));
-            reader.readAsDataURL(pendingMedia.file);
-        });
     }
 
     function clearPendingMedia() {
-        if (pendingMedia.previewUrl) {
-            URL.revokeObjectURL(pendingMedia.previewUrl);
-        }
-        pendingMedia = { type: null, file: null, previewUrl: null, cloudPath: null };
+        if (pendingMedia.previewUrl) URL.revokeObjectURL(pendingMedia.previewUrl);
+        pendingMedia = { type: null, file: null, previewUrl: null };
         document.getElementById('mediaPreview').innerHTML = '';
         document.getElementById('videoInput').value = '';
         document.getElementById('audioInput').value = '';
@@ -825,30 +261,39 @@
         const config = getCloudConfig();
         if (!config || !config.user || !config.pass) throw new Error('未配置坚果云');
         const fullUrl = `${config.url.replace(/\/$/, '')}${path}`;
-        const options = {
-            method: method,
-            headers: { 'Authorization': 'Basic ' + btoa(`${config.user}:${config.pass}`) }
-        };
+        const options = { method: method, headers: { 'Authorization': 'Basic ' + btoa(`${config.user}:${config.pass}`) } };
         if (content !== null) {
-            if (isBinary) {
-                options.body = content;
-            } else {
-                options.headers['Content-Type'] = 'application/json';
-                options.body = content;
-            }
+            if (isBinary) { options.body = content; }
+            else { options.headers['Content-Type'] = 'application/json'; options.body = content; }
         }
-        const response = await fetch(fullUrl, options);
-        return response;
+        return await fetch(fullUrl, options);
+    }
+
+    async function uploadMediaToCloud() {
+        if (!pendingMedia.file) return null;
+        const config = getCloudConfig();
+        if (!config) { showStatus('请先配置坚果云', 'error'); return null; }
+        const fileName = `media/${Date.now()}_${pendingMedia.file.name}`;
+        const reader = new FileReader();
+        return new Promise((resolve, reject) => {
+            reader.onload = async function(e) {
+                try {
+                    const base64Data = e.target.result.split(',')[1];
+                    const response = await webdavRequest('PUT', `/${fileName}`, base64Data, true);
+                    if (response.status === 201 || response.status === 204) {
+                        resolve(`${config.url.replace(/\/$/, '')}/${fileName}`);
+                    } else { reject(new Error('上传失败')); }
+                } catch(err) { reject(err); }
+            };
+            reader.onerror = () => reject(new Error('读取失败'));
+            reader.readAsDataURL(pendingMedia.file);
+        });
     }
 
     async function uploadToCloud() {
         const config = getCloudConfig();
         if (!config) return false;
-        try {
-            await webdavRequest('PUT', '/agit_data.json', JSON.stringify(allData));
-            showStatus('☁️ 已同步到云端', 'success');
-            return true;
-        } catch(e) { return false; }
+        try { await webdavRequest('PUT', '/agit_data.json', JSON.stringify(allData)); return true; } catch(e) { return false; }
     }
 
     async function downloadFromCloud() {
@@ -856,12 +301,7 @@
         if (!config) return false;
         try {
             const response = await webdavRequest('GET', '/agit_data.json');
-            if (response.status === 200) {
-                allData = await response.json();
-                saveAllData();
-                showStatus('☁️ 同步成功', 'success');
-                return true;
-            }
+            if (response.status === 200) { allData = await response.json(); saveAllData(); showStatus('☁️ 同步成功', 'success'); return true; }
         } catch(e) { return false; }
         return false;
     }
@@ -879,356 +319,93 @@
         const url = document.getElementById('webdavUrl').value;
         const user = document.getElementById('webdavUser').value;
         const pass = document.getElementById('webdavPass').value;
-        if (!url || !user || !pass) {
-            document.getElementById('cloudStatus').innerHTML = '❌ 请填写完整';
-            return;
-        }
+        if (!url || !user || !pass) { document.getElementById('cloudStatus').innerHTML = '❌ 请填写完整'; return; }
         document.getElementById('cloudStatus').innerHTML = '🔄 测试中...';
-        const testConfig = { url, user, pass };
         try {
-            const response = await fetch(`${url.replace(/\/$/, '')}/`, {
-                method: 'PROPFIND',
-                headers: { 'Authorization': 'Basic ' + btoa(`${user}:${pass}`) }
-            });
+            const response = await fetch(`${url.replace(/\/$/, '')}/`, { method: 'PROPFIND', headers: { 'Authorization': 'Basic ' + btoa(`${user}:${pass}`) } });
             if (response.status === 200 || response.status === 207) {
-                localStorage.setItem(CLOUD_CONFIG_KEY, JSON.stringify(testConfig));
+                localStorage.setItem(CLOUD_CONFIG_KEY, JSON.stringify({ url, user, pass }));
                 document.getElementById('cloudStatus').innerHTML = '✅ 配置成功！';
-                showStatus('☁️ 配置成功，正在同步...', 'success');
+                showStatus('☁️ 配置成功', 'success');
                 await syncFromCloud();
-            } else {
-                document.getElementById('cloudStatus').innerHTML = '❌ 认证失败';
-            }
-        } catch(e) {
-            document.getElementById('cloudStatus').innerHTML = `❌ 失败: ${e.message}`;
-        }
+            } else { document.getElementById('cloudStatus').innerHTML = '❌ 认证失败'; }
+        } catch(e) { document.getElementById('cloudStatus').innerHTML = `❌ 失败`; }
     }
 
-    function loadAllData() {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        allData = stored ? JSON.parse(stored) : {};
-    }
-
-    function saveAllData() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
-        setTimeout(() => uploadToCloud(), 300);
-    }
-
-    function getDayData() {
-        if (!allData[currentDate]) {
-            allData[currentDate] = { statuses: [] };
-        }
-        return allData[currentDate];
-    }
-
-    function saveDayData(data) {
-        allData[currentDate] = data;
-        saveAllData();
-    }
+    function loadAllData() { const stored = localStorage.getItem(STORAGE_KEY); allData = stored ? JSON.parse(stored) : {}; }
+    function saveAllData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(allData)); setTimeout(() => uploadToCloud(), 300); }
+    function getDayData() { if (!allData[currentDate]) allData[currentDate] = { statuses: [] }; return allData[currentDate]; }
+    function saveDayData(data) { allData[currentDate] = data; saveAllData(); }
 
     async function addStatus() {
-        const input = document.getElementById('newStatusInput');
-        const content = input.value.trim();
-        
+        const content = document.getElementById('newStatusInput').value.trim();
         let mediaUrl = null;
         if (pendingMedia.file) {
-            showStatus('正在上传媒体文件...', 'info');
-            try {
-                mediaUrl = await uploadMediaToCloud();
-            } catch(e) {
-                showStatus('媒体上传失败: ' + e.message, 'error');
-                return;
-            }
+            showStatus('上传媒体中...', 'info');
+            try { mediaUrl = await uploadMediaToCloud(); }
+            catch(e) { showStatus('上传失败', 'error'); return; }
         }
-        
         const dayData = getDayData();
-        const newStatus = {
-            id: Date.now(),
-            content: content || '',
-            time: new Date().toLocaleString(),
-            likes: 0,
-            liked: false,
-            comments: [],
-            media: mediaUrl ? { type: pendingMedia.type, url: mediaUrl } : null
-        };
-        dayData.statuses.unshift(newStatus);
+        dayData.statuses.unshift({ id: Date.now(), content: content || '', time: new Date().toLocaleString(), likes: 0, liked: false, comments: [], media: mediaUrl ? { type: pendingMedia.type, url: mediaUrl } : null });
         saveDayData(dayData);
-        input.value = '';
+        document.getElementById('newStatusInput').value = '';
         clearPendingMedia();
         renderStatusList();
-        showStatus('✅ 已发布并同步到云端', 'success');
+        showStatus('✅ 已发布', 'success');
     }
 
-    function startEditStatus(statusId) {
-        editingStatusId = statusId;
-        renderStatusList();
-    }
-
-    function saveEditStatus(statusId) {
-        const textarea = document.getElementById(`edit_textarea_${statusId}`);
-        const newContent = textarea.value.trim();
+    function startEditStatus(id) { editingStatusId = id; renderStatusList(); }
+    function saveEditStatus(id) {
+        const newContent = document.getElementById(`edit_textarea_${id}`).value.trim();
         const dayData = getDayData();
-        const status = dayData.statuses.find(s => s.id === statusId);
-        if (status) {
-            if (newContent) status.content = newContent;
-            saveDayData(dayData);
-            showStatus('✏️ 已更新', 'success');
-        }
-        editingStatusId = null;
-        renderStatusList();
-    }
-
-    function cancelEdit() {
-        editingStatusId = null;
-        renderStatusList();
-    }
-
-    function deleteStatus(statusId) {
-        if (!confirm('确定删除这条状态吗？')) return;
-        const dayData = getDayData();
-        dayData.statuses = dayData.statuses.filter(s => s.id !== statusId);
+        const status = dayData.statuses.find(s => s.id === id);
+        if (status && newContent) status.content = newContent;
         saveDayData(dayData);
+        editingStatusId = null;
         renderStatusList();
-        showStatus('🗑️ 已删除', 'success');
+        showStatus('✏️ 已更新', 'success');
     }
-
-    function toggleLike(statusId) {
-        const dayData = getDayData();
-        const status = dayData.statuses.find(s => s.id === statusId);
-        if (status) {
-            if (status.liked) {
-                status.likes--;
-                status.liked = false;
-            } else {
-                status.likes++;
-                status.liked = true;
-            }
-            saveDayData(dayData);
-            renderStatusList();
-        }
-    }
-
-    function addComment(statusId) {
-        const input = document.getElementById(`comment_input_${statusId}`);
-        const text = input.value.trim();
-        if (!text) return;
-        
-        const dayData = getDayData();
-        const status = dayData.statuses.find(s => s.id === statusId);
-        if (status) {
-            status.comments.push({
-                text: text,
-                time: new Date().toLocaleString()
-            });
-            saveDayData(dayData);
-            input.value = '';
-            renderStatusList();
-            showStatus('💬 评论已发布', 'success');
-        }
-    }
-
-    function deleteComment(statusId, commentIdx) {
-        const dayData = getDayData();
-        const status = dayData.statuses.find(s => s.id === statusId);
-        if (status) {
-            status.comments.splice(commentIdx, 1);
-            saveDayData(dayData);
-            renderStatusList();
-        }
-    }
+    function cancelEdit() { editingStatusId = null; renderStatusList(); }
+    function deleteStatus(id) { if (!confirm('确定删除？')) return; const dayData = getDayData(); dayData.statuses = dayData.statuses.filter(s => s.id !== id); saveDayData(dayData); renderStatusList(); showStatus('🗑️ 已删除', 'success'); }
+    function toggleLike(id) { const dayData = getDayData(); const s = dayData.statuses.find(s => s.id === id); if(s){ if(s.liked){ s.likes--; s.liked=false; }else{ s.likes++; s.liked=true; } saveDayData(dayData); renderStatusList(); } }
+    function addComment(id) { const input = document.getElementById(`comment_input_${id}`); const text = input.value.trim(); if(!text) return; const dayData = getDayData(); const s = dayData.statuses.find(s => s.id === id); if(s){ s.comments.push({ text: text, time: new Date().toLocaleString() }); saveDayData(dayData); input.value = ''; renderStatusList(); showStatus('💬 评论已发布', 'success'); } }
+    function deleteComment(statusId, idx) { const dayData = getDayData(); const s = dayData.statuses.find(s => s.id === statusId); if(s){ s.comments.splice(idx,1); saveDayData(dayData); renderStatusList(); } }
 
     function renderStatusList() {
-        const dayData = getDayData();
-        const statuses = dayData.statuses || [];
+        const statuses = getDayData().statuses || [];
         const container = document.getElementById('statusList');
-        
-        if (statuses.length === 0) {
-            container.innerHTML = '<div class="empty-status">✨ 还没有状态，写点什么吧～</div>';
-            return;
-        }
-        
-        container.innerHTML = statuses.map(status => {
-            if (editingStatusId === status.id) {
-                return `
-                    <div class="status-card">
-                        <div class="status-header">
-                            <span class="status-time">📝 ${status.time}</span>
-                            <div class="status-actions">
-                                <button class="edit-status-btn" onclick="saveEditStatus(${status.id})">💾 保存</button>
-                                <button class="edit-status-btn" onclick="cancelEdit()">❌ 取消</button>
-                            </div>
-                        </div>
-                        <div class="status-content">
-                            <textarea class="edit-status-textarea" id="edit_textarea_${status.id}" rows="4">${escapeHtml(status.content)}</textarea>
-                        </div>
-                    </div>
-                `;
-            }
-            return `
-                <div class="status-card">
-                    <div class="status-header">
-                        <span class="status-time">📝 ${status.time}</span>
-                        <div class="status-actions">
-                            <button class="edit-status-btn" onclick="startEditStatus(${status.id})">✏️ 编辑</button>
-                            <button class="delete-status-btn" onclick="deleteStatus(${status.id})">🗑️</button>
-                        </div>
-                    </div>
-                    <div class="status-content">${escapeHtml(status.content)}</div>
-                    ${status.media ? `
-                        <div class="status-media">
-                            ${status.media.type === 'video' ? `<video src="${status.media.url}" controls style="max-width:100%; border-radius:16px;"></video>` : ''}
-                            ${status.media.type === 'audio' ? `<audio src="${status.media.url}" controls style="width:100%;"></audio>` : ''}
-                        </div>
-                    ` : ''}
-                    <div class="status-stats">
-                        <button class="stat-btn ${status.liked ? 'liked' : ''}" onclick="toggleLike(${status.id})">
-                            <span>❤️</span> <span>${status.likes || 0}</span>
-                        </button>
-                        <button class="stat-btn" onclick="document.getElementById('comments_${status.id}').scrollIntoView({behavior:'smooth'})">
-                            <span>💬</span> <span>${status.comments.length}</span>
-                        </button>
-                    </div>
-                    <div class="comments-section" id="comments_${status.id}">
-                        ${renderComments(status.comments, status.id)}
-                        <div class="add-comment">
-                            <input type="text" id="comment_input_${status.id}" placeholder="写评论..." onkeypress="if(event.key==='Enter') addComment(${status.id})">
-                            <button onclick="addComment(${status.id})">发送</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-    
-    function renderComments(comments, statusId) {
-        if (!comments || comments.length === 0) {
-            return '<div style="color:var(--text-light); font-size:0.75rem; margin-bottom:10px;">还没有评论</div>';
-        }
-        return comments.map((comment, idx) => `
-            <div class="comment-item">
-                <span class="comment-name">📝 你</span>
-                <div style="flex:1">
-                    <div class="comment-text">${escapeHtml(comment.text)}</div>
-                    <div class="comment-time">${comment.time}</div>
-                </div>
-                <button onclick="deleteComment(${statusId}, ${idx})" style="background:none; border:none; color:var(--text-light); cursor:pointer;">🗑️</button>
-            </div>
+        if (statuses.length === 0) { container.innerHTML = '<div class="empty-status">✨ 还没有状态，写点什么吧～</div>'; return; }
+        container.innerHTML = statuses.map(s => editingStatusId === s.id ? `
+            <div class="status-card"><div class="status-header"><span class="status-time">📝 ${s.time}</span><div class="status-actions"><button class="edit-status-btn" onclick="saveEditStatus(${s.id})">💾 保存</button><button class="edit-status-btn" onclick="cancelEdit()">❌ 取消</button></div></div><div class="status-content"><textarea class="edit-status-textarea" id="edit_textarea_${s.id}" rows="4">${escapeHtml(s.content)}</textarea></div></div>
+        ` : `
+            <div class="status-card"><div class="status-header"><span class="status-time">📝 ${s.time}</span><div class="status-actions"><button class="edit-status-btn" onclick="startEditStatus(${s.id})">✏️ 编辑</button><button class="delete-status-btn" onclick="deleteStatus(${s.id})">🗑️</button></div></div><div class="status-content">${escapeHtml(s.content)}</div>${s.media ? `<div class="status-media">${s.media.type === 'video' ? `<video src="${s.media.url}" controls style="max-width:100%; border-radius:16px;"></video>` : `<audio src="${s.media.url}" controls style="width:100%;"></audio>`}</div>` : ''}<div class="status-stats"><button class="stat-btn ${s.liked ? 'liked' : ''}" onclick="toggleLike(${s.id})"><span>❤️</span> <span>${s.likes || 0}</span></button><button class="stat-btn" onclick="document.getElementById('comments_${s.id}').scrollIntoView({behavior:'smooth'})"><span>💬</span> <span>${s.comments.length}</span></button></div><div class="comments-section" id="comments_${s.id}">${renderComments(s.comments, s.id)}<div class="add-comment"><input type="text" id="comment_input_${s.id}" placeholder="写评论..." onkeypress="if(event.key==='Enter') addComment(${s.id})"><button onclick="addComment(${s.id})">发送</button></div></div></div>
         `).join('');
     }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+    function renderComments(comments, statusId) {
+        if (!comments || comments.length === 0) return '<div style="color:var(--text-light); font-size:0.75rem; margin-bottom:10px;">还没有评论</div>';
+        return comments.map((c, idx) => `<div class="comment-item"><span class="comment-name">📝 你</span><div style="flex:1"><div class="comment-text">${escapeHtml(c.text)}</div><div class="comment-time">${c.time}</div></div><button onclick="deleteComment(${statusId}, ${idx})" style="background:none; border:none; color:var(--text-light); cursor:pointer;">🗑️</button></div>`).join('');
     }
 
-    function updateDateDisplay() {
-        const dateObj = new Date(currentDate);
-        const year = dateObj.getFullYear();
-        const month = dateObj.getMonth() + 1;
-        const day = dateObj.getDate();
-        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-        document.getElementById('displayDate').innerText = `${year}年${month}月${day}日`;
-        document.getElementById('displayWeekday').innerText = weekdays[dateObj.getDay()];
-    }
-
-    function changeDate() {
-        const newDate = document.getElementById('datePicker').value;
-        if (newDate) {
-            currentDate = newDate;
-            updateDateDisplay();
-            renderStatusList();
-        }
-        closeDateModal();
-    }
-
-    function openDateModal() {
-        document.getElementById('datePicker').value = currentDate;
-        document.getElementById('dateModal').style.display = 'flex';
-    }
-
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+    function updateDateDisplay() { const d = new Date(currentDate); document.getElementById('displayDate').innerText = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`; document.getElementById('displayWeekday').innerText = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][d.getDay()]; }
+    function changeDate() { const nd = document.getElementById('datePicker').value; if(nd){ currentDate = nd; updateDateDisplay(); renderStatusList(); } closeDateModal(); }
+    function openDateModal() { document.getElementById('datePicker').value = currentDate; document.getElementById('dateModal').style.display = 'flex'; }
     function closeDateModal() { document.getElementById('dateModal').style.display = 'none'; }
     function openCloudModal() { document.getElementById('cloudModal').style.display = 'flex'; }
     function closeCloudModal() { document.getElementById('cloudModal').style.display = 'none'; }
     function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
     function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
-
-    function showStatus(msg, type) {
-        const div = document.getElementById('statusMsg');
-        div.textContent = msg;
-        div.className = `status-msg status-${type}`;
-        div.style.display = 'block';
-        setTimeout(() => div.style.display = 'none', 3000);
-    }
-
-    function getStoredPassword() {
-        const pwd = localStorage.getItem(PASSWORD_KEY);
-        return pwd === null ? DEFAULT_PASSWORD : pwd;
-    }
-
-    function checkLogin() {
-        const inputPwd = document.getElementById('loginPassword').value;
-        const storedPwd = getStoredPassword();
-        if (storedPwd === '' || inputPwd === storedPwd) {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-            loadAllData();
-            updateDateDisplay();
-            renderStatusList();
-            setTimeout(() => { if(getCloudConfig()) syncFromCloud(); }, 500);
-        } else {
-            document.getElementById('loginError').innerText = '密码错误';
-        }
-    }
-
-    function logout() {
-        editingStatusId = null;
-        document.getElementById('mainContent').style.display = 'none';
-        document.getElementById('loginOverlay').style.display = 'flex';
-        document.getElementById('loginPassword').value = '';
-        document.getElementById('loginError').innerText = '';
-    }
-
-    function changePassword() {
-        const newPwd = document.getElementById('newPassword').value;
-        const confirmPwd = document.getElementById('confirmPassword').value;
-        if (!newPwd || newPwd !== confirmPwd || newPwd.length < 4) {
-            showStatus('密码至少4位且两次输入一致', 'error');
-            return;
-        }
-        localStorage.setItem(PASSWORD_KEY, newPwd);
-        closeSettings();
-        showStatus('密码修改成功', 'success');
-        setTimeout(() => { if(confirm('是否立即退出用新密码登录？')) logout(); }, 1000);
-    }
-
-    function disablePassword() {
-        if (confirm('确定取消密码保护？')) {
-            localStorage.setItem(PASSWORD_KEY, '');
-            closeSettings();
-            showStatus('密码已取消', 'success');
-            setTimeout(() => logout(), 1000);
-        }
-    }
-
-    function checkAutoLogin() {
-        if (getStoredPassword() === '') {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-            loadAllData();
-            updateDateDisplay();
-            renderStatusList();
-            setTimeout(() => { if(getCloudConfig()) syncFromCloud(); }, 500);
-        }
-    }
-
+    function showStatus(msg, type) { const div = document.getElementById('statusMsg'); div.textContent = msg; div.className = `status-msg status-${type}`; div.style.display = 'block'; setTimeout(() => div.style.display = 'none', 2500); }
+    function getStoredPassword() { const p = localStorage.getItem(PASSWORD_KEY); return p === null ? DEFAULT_PASSWORD : p; }
+    function checkLogin() { const input = document.getElementById('loginPassword').value; const stored = getStoredPassword(); if(stored === '' || input === stored){ document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('mainContent').style.display = 'block'; loadAllData(); updateDateDisplay(); renderStatusList(); setTimeout(() => { if(getCloudConfig()) syncFromCloud(); }, 500); } else { document.getElementById('loginError').innerText = '密码错误'; } }
+    function logout() { editingStatusId = null; document.getElementById('mainContent').style.display = 'none'; document.getElementById('loginOverlay').style.display = 'flex'; document.getElementById('loginPassword').value = ''; document.getElementById('loginError').innerText = ''; }
+    function changePassword() { const np = document.getElementById('newPassword').value; const cp = document.getElementById('confirmPassword').value; if(!np || np !== cp || np.length < 4){ showStatus('密码至少4位且一致', 'error'); return; } localStorage.setItem(PASSWORD_KEY, np); closeSettings(); showStatus('密码修改成功', 'success'); setTimeout(() => { if(confirm('是否退出用新密码登录？')) logout(); }, 1000); }
+    function disablePassword() { if(confirm('确定取消密码？')){ localStorage.setItem(PASSWORD_KEY, ''); closeSettings(); showStatus('密码已取消', 'success'); setTimeout(() => logout(), 1000); } }
+    function checkAutoLogin() { if(getStoredPassword() === ''){ document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('mainContent').style.display = 'block'; loadAllData(); updateDateDisplay(); renderStatusList(); setTimeout(() => { if(getCloudConfig()) syncFromCloud(); }, 500); } }
     document.getElementById('dateModal').addEventListener('click', e => { if(e.target === document.getElementById('dateModal')) closeDateModal(); });
     document.getElementById('cloudModal').addEventListener('click', e => { if(e.target === document.getElementById('cloudModal')) closeCloudModal(); });
     document.getElementById('settingsModal').addEventListener('click', e => { if(e.target === document.getElementById('settingsModal')) closeSettings(); });
-
     checkAutoLogin();
 </script>
 </body>
