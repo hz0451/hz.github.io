@@ -178,20 +178,76 @@
             border: 1px solid var(--border);
         }
 
-        .emoji-bar {
+        .input-toolbar {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             margin-bottom: 12px;
+            align-items: center;
+            position: relative;
             flex-wrap: wrap;
         }
 
-        .emoji-btn {
+        .emoji-picker-btn, .attach-btn {
             background: var(--bg);
             border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text);
+        }
+
+        .emoji-dropdown {
+            position: absolute;
+            top: 45px;
+            left: 0;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 15px;
+            width: 300px;
+            z-index: 100;
+            border: 1px solid var(--border);
+            display: none;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .emoji-dropdown.show {
+            display: block;
+        }
+
+        .emoji-category {
+            margin-bottom: 12px;
+        }
+
+        .emoji-category-title {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .emoji-item {
             font-size: 1.3rem;
             cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 30px;
+            padding: 5px;
+            text-align: center;
+            border-radius: 10px;
+            transition: background 0.2s;
+        }
+
+        .emoji-item:hover {
+            background: var(--bg);
         }
 
         .new-status-input {
@@ -207,6 +263,46 @@
 
         .new-status-input:focus {
             border-color: var(--primary);
+        }
+
+        .media-preview {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .media-item {
+            position: relative;
+            display: inline-block;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 8px;
+        }
+
+        .media-item video, .media-item audio {
+            max-width: 200px;
+            border-radius: 12px;
+        }
+
+        .remove-media {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--like);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .upload-progress {
+            font-size: 0.7rem;
+            color: var(--primary);
+            margin-left: 10px;
         }
 
         .new-status-actions {
@@ -271,6 +367,19 @@
             word-break: break-word;
         }
 
+        .status-media {
+            padding: 0 20px 20px 20px;
+        }
+
+        .status-media video {
+            max-width: 100%;
+            border-radius: 16px;
+        }
+
+        .status-media audio {
+            width: 100%;
+        }
+
         .edit-status-textarea {
             width: 100%;
             padding: 14px 16px;
@@ -281,29 +390,6 @@
             resize: vertical;
             outline: none;
             margin-bottom: 12px;
-        }
-
-        .edit-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
-
-        .edit-save-btn, .edit-cancel-btn {
-            padding: 8px 20px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-        }
-
-        .edit-save-btn {
-            background: var(--primary);
-            color: white;
-        }
-
-        .edit-cancel-btn {
-            background: var(--bg);
-            color: var(--text);
         }
 
         .status-stats {
@@ -486,13 +572,23 @@
             color: var(--text-light);
             cursor: pointer;
         }
+
+        .file-input {
+            display: none;
+        }
+
+        .sync-badge {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div class="login-overlay" id="loginOverlay">
     <div class="login-card">
-        <h2>📔 Agit</h2>
+        <h2>Agit</h2>
         <p>输入密码进入你的私人空间</p>
         <input type="password" class="login-input" id="loginPassword" placeholder="请输入密码" onkeypress="if(event.key==='Enter') checkLogin()">
         <button class="login-btn" onclick="checkLogin()">进入</button>
@@ -502,7 +598,7 @@
 
 <div class="main-content" id="mainContent">
     <div class="navbar">
-        <div class="logo">📔 Agit</div>
+        <div class="logo">Agit</div>
         <div class="nav-buttons">
             <button class="cloud-btn" onclick="openCloudModal()">☁️</button>
             <button class="settings-btn" onclick="openSettings()">⚙️</button>
@@ -518,21 +614,51 @@
     </div>
 
     <div class="new-status-card">
-        <div class="emoji-bar">
-            <button class="emoji-btn" onclick="addEmoji('😊')">😊</button>
-            <button class="emoji-btn" onclick="addEmoji('❤️')">❤️</button>
-            <button class="emoji-btn" onclick="addEmoji('👍')">👍</button>
-            <button class="emoji-btn" onclick="addEmoji('🎉')">🎉</button>
-            <button class="emoji-btn" onclick="addEmoji('✨')">✨</button>
-            <button class="emoji-btn" onclick="addEmoji('💡')">💡</button>
-            <button class="emoji-btn" onclick="addEmoji('📝')">📝</button>
-            <button class="emoji-btn" onclick="addEmoji('☕')">☕</button>
-            <button class="emoji-btn" onclick="addEmoji('🌟')">🌟</button>
-            <button class="emoji-btn" onclick="addEmoji('💪')">💪</button>
-            <button class="emoji-btn" onclick="addEmoji('🌸')">🌸</button>
-            <button class="emoji-btn" onclick="addEmoji('🌈')">🌈</button>
+        <div class="input-toolbar">
+            <button class="emoji-picker-btn" onclick="toggleEmojiPicker()">😊 表情</button>
+            <button class="attach-btn" onclick="document.getElementById('videoInput').click()">📹 视频</button>
+            <button class="attach-btn" onclick="document.getElementById('audioInput').click()">🎵 音频</button>
+            <div class="emoji-dropdown" id="emojiDropdown">
+                <div class="emoji-category">
+                    <div class="emoji-category-title">😊 积极</div>
+                    <div class="emoji-grid">
+                        <div class="emoji-item" onclick="addEmoji('😊')">😊</div><div class="emoji-item" onclick="addEmoji('❤️')">❤️</div>
+                        <div class="emoji-item" onclick="addEmoji('👍')">👍</div><div class="emoji-item" onclick="addEmoji('🎉')">🎉</div>
+                        <div class="emoji-item" onclick="addEmoji('✨')">✨</div><div class="emoji-item" onclick="addEmoji('🌟')">🌟</div>
+                        <div class="emoji-item" onclick="addEmoji('💪')">💪</div><div class="emoji-item" onclick="addEmoji('🌸')">🌸</div>
+                        <div class="emoji-item" onclick="addEmoji('🌈')">🌈</div><div class="emoji-item" onclick="addEmoji('⭐')">⭐</div>
+                        <div class="emoji-item" onclick="addEmoji('🔥')">🔥</div><div class="emoji-item" onclick="addEmoji('💎')">💎</div>
+                        <div class="emoji-item" onclick="addEmoji('🎈')">🎈</div><div class="emoji-item" onclick="addEmoji('🍕')">🍕</div>
+                    </div>
+                </div>
+                <div class="emoji-category">
+                    <div class="emoji-category-title">😢 负面</div>
+                    <div class="emoji-grid">
+                        <div class="emoji-item" onclick="addEmoji('😢')">😢</div><div class="emoji-item" onclick="addEmoji('😭')">😭</div>
+                        <div class="emoji-item" onclick="addEmoji('😠')">😠</div><div class="emoji-item" onclick="addEmoji('💀')">💀</div>
+                        <div class="emoji-item" onclick="addEmoji('👻')">👻</div><div class="emoji-item" onclick="addEmoji('😈')">😈</div>
+                        <div class="emoji-item" onclick="addEmoji('👿')">👿</div><div class="emoji-item" onclick="addEmoji('🤡')">🤡</div>
+                        <div class="emoji-item" onclick="addEmoji('😤')">😤</div><div class="emoji-item" onclick="addEmoji('😩')">😩</div>
+                        <div class="emoji-item" onclick="addEmoji('😫')">😫</div><div class="emoji-item" onclick="addEmoji('💔')">💔</div>
+                        <div class="emoji-item" onclick="addEmoji('🖤')">🖤</div><div class="emoji-item" onclick="addEmoji('😱')">😱</div>
+                    </div>
+                </div>
+                <div class="emoji-category">
+                    <div class="emoji-category-title">🌧️ 天气/其他</div>
+                    <div class="emoji-grid">
+                        <div class="emoji-item" onclick="addEmoji('☀️')">☀️</div><div class="emoji-item" onclick="addEmoji('☁️')">☁️</div>
+                        <div class="emoji-item" onclick="addEmoji('🌧️')">🌧️</div><div class="emoji-item" onclick="addEmoji('⛈️')">⛈️</div>
+                        <div class="emoji-item" onclick="addEmoji('🌪️')">🌪️</div><div class="emoji-item" onclick="addEmoji('❄️')">❄️</div>
+                        <div class="emoji-item" onclick="addEmoji('☔')">☔</div><div class="emoji-item" onclick="addEmoji('⚡')">⚡</div>
+                        <div class="emoji-item" onclick="addEmoji('💨')">💨</div><div class="emoji-item" onclick="addEmoji('🌙')">🌙</div>
+                        <div class="emoji-item" onclick="addEmoji('🌞')">🌞</div><div class="emoji-item" onclick="addEmoji('🐱')">🐱</div>
+                        <div class="emoji-item" onclick="addEmoji('🐶')">🐶</div><div class="emoji-item" onclick="addEmoji('🌸')">🌸</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <textarea class="new-status-input" id="newStatusInput" rows="3" placeholder="写点什么..."></textarea>
+        <div class="media-preview" id="mediaPreview"></div>
         <div class="new-status-actions">
             <button class="post-status-btn" onclick="addStatus()">发布</button>
         </div>
@@ -543,6 +669,9 @@
     <button class="logout-btn" onclick="logout()">🚪 退出登录</button>
     <div id="statusMsg" style="display: none;"></div>
 </div>
+
+<input type="file" id="videoInput" accept="video/*" style="display:none" onchange="handleMediaSelect(this, 'video')">
+<input type="file" id="audioInput" accept="audio/*" style="display:none" onchange="handleMediaSelect(this, 'audio')">
 
 <div class="date-modal" id="dateModal">
     <div class="date-modal-content">
@@ -587,6 +716,19 @@
     let allData = {};
     let isSyncing = false;
     let editingStatusId = null;
+    let pendingMedia = { type: null, file: null, previewUrl: null, cloudPath: null };
+
+    function toggleEmojiPicker() {
+        const dropdown = document.getElementById('emojiDropdown');
+        dropdown.classList.toggle('show');
+        const closePicker = (e) => {
+            if (!dropdown.contains(e.target) && !e.target.classList.contains('emoji-picker-btn')) {
+                dropdown.classList.remove('show');
+                document.removeEventListener('click', closePicker);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', closePicker), 100);
+    }
 
     function addEmoji(emoji) {
         const input = document.getElementById('newStatusInput');
@@ -594,12 +736,92 @@
         input.focus();
     }
 
+    async function handleMediaSelect(input, type) {
+        const file = input.files[0];
+        if (!file) return;
+        
+        const previewUrl = URL.createObjectURL(file);
+        pendingMedia = { type: type, file: file, previewUrl: previewUrl, cloudPath: null };
+        showMediaPreview();
+    }
+
+    function showMediaPreview() {
+        const preview = document.getElementById('mediaPreview');
+        if (pendingMedia.type === 'video') {
+            preview.innerHTML = `
+                <div class="media-item">
+                    <video src="${pendingMedia.previewUrl}" controls style="max-width:200px; border-radius:12px;"></video>
+                    <button class="remove-media" onclick="clearPendingMedia()">×</button>
+                    <div class="upload-progress" id="uploadProgress">等待上传...</div>
+                </div>
+            `;
+        } else if (pendingMedia.type === 'audio') {
+            preview.innerHTML = `
+                <div class="media-item">
+                    <audio src="${pendingMedia.previewUrl}" controls></audio>
+                    <button class="remove-media" onclick="clearPendingMedia()">×</button>
+                    <div class="upload-progress" id="uploadProgress">等待上传...</div>
+                </div>
+            `;
+        }
+    }
+
+    function updateUploadProgress(msg) {
+        const progressDiv = document.getElementById('uploadProgress');
+        if (progressDiv) progressDiv.innerText = msg;
+    }
+
+    async function uploadMediaToCloud() {
+        if (!pendingMedia.file) return null;
+        
+        const config = getCloudConfig();
+        if (!config) {
+            showStatus('请先配置坚果云才能上传媒体文件', 'error');
+            return null;
+        }
+        
+        updateUploadProgress('正在上传到坚果云...');
+        
+        const fileName = `media/${Date.now()}_${pendingMedia.file.name}`;
+        const reader = new FileReader();
+        
+        return new Promise((resolve, reject) => {
+            reader.onload = async function(e) {
+                try {
+                    const base64Data = e.target.result.split(',')[1];
+                    const response = await webdavRequest('PUT', `/${fileName}`, base64Data, true);
+                    if (response.status === 201 || response.status === 204) {
+                        updateUploadProgress('上传完成！');
+                        const cloudUrl = `${config.url.replace(/\/$/, '')}/${fileName}`;
+                        resolve(cloudUrl);
+                    } else {
+                        reject(new Error('上传失败'));
+                    }
+                } catch(err) {
+                    reject(err);
+                }
+            };
+            reader.onerror = () => reject(new Error('读取文件失败'));
+            reader.readAsDataURL(pendingMedia.file);
+        });
+    }
+
+    function clearPendingMedia() {
+        if (pendingMedia.previewUrl) {
+            URL.revokeObjectURL(pendingMedia.previewUrl);
+        }
+        pendingMedia = { type: null, file: null, previewUrl: null, cloudPath: null };
+        document.getElementById('mediaPreview').innerHTML = '';
+        document.getElementById('videoInput').value = '';
+        document.getElementById('audioInput').value = '';
+    }
+
     function getCloudConfig() {
         const saved = localStorage.getItem(CLOUD_CONFIG_KEY);
         return saved ? JSON.parse(saved) : null;
     }
 
-    async function webdavRequest(method, path, content = null) {
+    async function webdavRequest(method, path, content = null, isBinary = false) {
         const config = getCloudConfig();
         if (!config || !config.user || !config.pass) throw new Error('未配置坚果云');
         const fullUrl = `${config.url.replace(/\/$/, '')}${path}`;
@@ -608,8 +830,12 @@
             headers: { 'Authorization': 'Basic ' + btoa(`${config.user}:${config.pass}`) }
         };
         if (content !== null) {
-            options.headers['Content-Type'] = 'application/json';
-            options.body = content;
+            if (isBinary) {
+                options.body = content;
+            } else {
+                options.headers['Content-Type'] = 'application/json';
+                options.body = content;
+            }
         }
         const response = await fetch(fullUrl, options);
         return response;
@@ -699,25 +925,37 @@
         saveAllData();
     }
 
-    function addStatus() {
+    async function addStatus() {
         const input = document.getElementById('newStatusInput');
         const content = input.value.trim();
-        if (!content) return;
+        
+        let mediaUrl = null;
+        if (pendingMedia.file) {
+            showStatus('正在上传媒体文件...', 'info');
+            try {
+                mediaUrl = await uploadMediaToCloud();
+            } catch(e) {
+                showStatus('媒体上传失败: ' + e.message, 'error');
+                return;
+            }
+        }
         
         const dayData = getDayData();
         const newStatus = {
             id: Date.now(),
-            content: content,
+            content: content || '',
             time: new Date().toLocaleString(),
             likes: 0,
             liked: false,
-            comments: []
+            comments: [],
+            media: mediaUrl ? { type: pendingMedia.type, url: mediaUrl } : null
         };
         dayData.statuses.unshift(newStatus);
         saveDayData(dayData);
         input.value = '';
+        clearPendingMedia();
         renderStatusList();
-        showStatus('✅ 已发布', 'success');
+        showStatus('✅ 已发布并同步到云端', 'success');
     }
 
     function startEditStatus(statusId) {
@@ -728,12 +966,10 @@
     function saveEditStatus(statusId) {
         const textarea = document.getElementById(`edit_textarea_${statusId}`);
         const newContent = textarea.value.trim();
-        if (!newContent) return;
-        
         const dayData = getDayData();
         const status = dayData.statuses.find(s => s.id === statusId);
         if (status) {
-            status.content = newContent;
+            if (newContent) status.content = newContent;
             saveDayData(dayData);
             showStatus('✏️ 已更新', 'success');
         }
@@ -837,6 +1073,12 @@
                         </div>
                     </div>
                     <div class="status-content">${escapeHtml(status.content)}</div>
+                    ${status.media ? `
+                        <div class="status-media">
+                            ${status.media.type === 'video' ? `<video src="${status.media.url}" controls style="max-width:100%; border-radius:16px;"></video>` : ''}
+                            ${status.media.type === 'audio' ? `<audio src="${status.media.url}" controls style="width:100%;"></audio>` : ''}
+                        </div>
+                    ` : ''}
                     <div class="status-stats">
                         <button class="stat-btn ${status.liked ? 'liked' : ''}" onclick="toggleLike(${status.id})">
                             <span>❤️</span> <span>${status.likes || 0}</span>
@@ -919,7 +1161,7 @@
         div.textContent = msg;
         div.className = `status-msg status-${type}`;
         div.style.display = 'block';
-        setTimeout(() => div.style.display = 'none', 2500);
+        setTimeout(() => div.style.display = 'none', 3000);
     }
 
     function getStoredPassword() {
