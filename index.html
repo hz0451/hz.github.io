@@ -21,7 +21,7 @@
         .navbar { background: var(--card-bg); border-radius: 24px; padding: 16px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
         .nav-buttons { display: flex; gap: 12px; }
-        .settings-btn, .cloud-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 8px; border-radius: 12px; }
+        .settings-btn, .sync-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 8px; border-radius: 12px; }
         .date-section { background: var(--card-bg); border-radius: 24px; padding: 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
         .date-info { font-weight: 600; font-size: 1.2rem; color: var(--text); }
         .date-weekday { font-size: 0.85rem; color: var(--text-light); margin-left: 10px; }
@@ -42,7 +42,6 @@
         .media-item { position: relative; display: inline-block; background: var(--bg); border-radius: 12px; padding: 8px; }
         .media-item video, .media-item audio { max-width: 200px; border-radius: 12px; }
         .remove-media { position: absolute; top: -8px; right: -8px; background: var(--like); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 12px; }
-        .upload-progress { font-size: 0.7rem; color: var(--primary); margin-left: 10px; }
         .new-status-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px; }
         .post-status-btn { padding: 10px 24px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; }
         .status-card { background: var(--card-bg); border-radius: 24px; margin-bottom: 20px; overflow: hidden; border: 1px solid var(--border); }
@@ -67,11 +66,11 @@
         .add-comment input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 30px; outline: none; font-size: 0.85rem; }
         .add-comment button { background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer; }
         .empty-status { text-align: center; padding: 60px 20px; color: var(--text-light); background: var(--card-bg); border-radius: 24px; border: 1px solid var(--border); }
-        .cloud-modal, .settings-modal, .date-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(90,80,70,0.5); z-index: 1002; align-items: center; justify-content: center; }
-        .cloud-card, .settings-card, .date-modal-content { background: var(--card-bg); border-radius: 24px; padding: 30px; width: 90%; max-width: 380px; }
-        .cloud-card h3, .settings-card h3, .date-modal-content h4 { margin-bottom: 20px; font-size: 1.3rem; color: var(--primary); }
-        .cloud-card input, .settings-card input, .date-modal-content input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 15px; outline: none; }
-        .cloud-card button, .settings-card button, .date-modal-content button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+        .settings-modal, .date-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(90,80,70,0.5); z-index: 1002; align-items: center; justify-content: center; }
+        .settings-card, .date-modal-content { background: var(--card-bg); border-radius: 24px; padding: 30px; width: 90%; max-width: 380px; }
+        .settings-card h3, .date-modal-content h4 { margin-bottom: 20px; font-size: 1.3rem; color: var(--primary); }
+        .settings-card input, .date-modal-content input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 15px; outline: none; }
+        .settings-card button, .date-modal-content button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-danger { background: var(--like); color: white; }
         .btn-secondary { background: var(--bg); color: var(--text); }
@@ -99,7 +98,7 @@
     <div class="navbar">
         <div class="logo">Agit</div>
         <div class="nav-buttons">
-            <button class="cloud-btn" onclick="openCloudModal()">☁️</button>
+            <button class="sync-btn" onclick="syncWithGitHub()" title="同步到云端">☁️</button>
             <button class="settings-btn" onclick="openSettings()">⚙️</button>
         </div>
     </div>
@@ -177,19 +176,6 @@
     </div>
 </div>
 
-<div class="cloud-modal" id="cloudModal">
-    <div class="cloud-card">
-        <h3>☁️ 坚果云同步</h3>
-        <input type="text" id="webdavUrl" placeholder="服务器地址" value="https://dav.jianguoyun.com/dav/">
-        <input type="text" id="webdavUser" placeholder="坚果云账号">
-        <input type="password" id="webdavPass" placeholder="应用密码">
-        <button class="btn-primary" onclick="testAndSaveCloud()">测试并保存</button>
-        <button class="btn-secondary" onclick="syncFromCloud()">手动同步</button>
-        <button class="btn-secondary" onclick="closeCloudModal()">关闭</button>
-        <div id="cloudStatus" style="font-size:0.75rem; margin-top:10px;"></div>
-    </div>
-</div>
-
 <div class="settings-modal" id="settingsModal">
     <div class="settings-card">
         <h3>⚙️ 密码设置</h3>
@@ -202,9 +188,15 @@
 </div>
 
 <script>
+    // ========== GitHub 配置 - 请在这里填写你的信息 ==========
+    const GITHUB_USERNAME = "hz0451";  // 替换成你的GitHub用户名
+    const GITHUB_REPO = "hz.github.io";  // 替换成你的仓库名
+    const GITHUB_TOKEN = "你的Token";  // 替换成你生成的Token
+    const DATA_FILE = "agit_data.json";
+    // =====================================================
+
     const STORAGE_KEY = 'agit_diary_data';
     const PASSWORD_KEY = 'agit_password';
-    const CLOUD_CONFIG_KEY = 'agit_cloud_config';
     const DEFAULT_PASSWORD = '123456';
 
     let currentDate = new Date().toISOString().split('T')[0];
@@ -212,6 +204,133 @@
     let isSyncing = false;
     let editingStatusId = null;
     let pendingMedia = { type: null, file: null, previewUrl: null };
+
+    // GitHub API 请求
+    async function githubRequest(method, endpoint, body = null) {
+        const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${endpoint}`;
+        const headers = {
+            'Authorization': `token ${GITHUB_TOKEN}`,
+            'Accept': 'application/vnd.github.v3+json'
+        };
+        if (body) {
+            headers['Content-Type'] = 'application/json';
+        }
+        const options = { method: method, headers: headers };
+        if (body) {
+            options.body = JSON.stringify(body);
+        }
+        const response = await fetch(url, options);
+        return response;
+    }
+
+    // 上传数据到 GitHub
+    async function uploadToGitHub() {
+        if (!GITHUB_TOKEN || GITHUB_TOKEN === "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") {
+            showStatus('请先在代码中配置 GitHub Token', 'error');
+            return false;
+        }
+        try {
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(allData, null, 2))));
+            // 先获取当前文件信息（用于获取 sha）
+            let sha = null;
+            const getRes = await githubRequest('GET', DATA_FILE);
+            if (getRes.status === 200) {
+                const fileData = await getRes.json();
+                sha = fileData.sha;
+            }
+            const body = {
+                message: `更新日记数据 - ${new Date().toLocaleString()}`,
+                content: content,
+                branch: 'main'
+            };
+            if (sha) body.sha = sha;
+            const response = await githubRequest('PUT', DATA_FILE, body);
+            if (response.status === 201 || response.status === 200) {
+                showStatus('☁️ 已同步到 GitHub', 'success');
+                return true;
+            } else {
+                const err = await response.json();
+                throw new Error(err.message);
+            }
+        } catch(e) {
+            showStatus('同步失败: ' + e.message, 'error');
+            return false;
+        }
+    }
+
+    // 从 GitHub 下载数据
+    async function downloadFromGitHub() {
+        if (!GITHUB_TOKEN || GITHUB_TOKEN === "你的Token") {
+            showStatus('请先在代码中配置 GitHub Token', 'error');
+            return false;
+        }
+        try {
+            const response = await githubRequest('GET', DATA_FILE);
+            if (response.status === 200) {
+                const fileData = await response.json();
+                const content = decodeURIComponent(escape(atob(fileData.content)));
+                allData = JSON.parse(content);
+                saveAllData();
+                showStatus('☁️ 从 GitHub 同步成功', 'success');
+                return true;
+            } else if (response.status === 404) {
+                showStatus('云端暂无数据，保存后会自动上传', 'info');
+                return false;
+            } else {
+                throw new Error('获取失败');
+            }
+        } catch(e) {
+            showStatus('同步失败: ' + e.message, 'error');
+            return false;
+        }
+    }
+
+    async function syncWithGitHub() {
+        if (isSyncing) return;
+        isSyncing = true;
+        showStatus('🔄 同步中...', 'info');
+        await downloadFromGitHub();
+        renderStatusList();
+        isSyncing = false;
+    }
+
+    // 媒体上传到 GitHub（转 base64 存储）
+    async function uploadMediaToGitHub(file, type) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const base64Data = e.target.result.split(',')[1];
+                    const fileName = `media/${Date.now()}_${file.name}`;
+                    const content = base64Data;
+                    const body = {
+                        message: `上传媒体文件 - ${new Date().toLocaleString()}`,
+                        content: content,
+                        branch: 'main'
+                    };
+                    const url = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${fileName}`;
+                    const response = await fetch(url, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${GITHUB_TOKEN}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    });
+                    if (response.status === 201 || response.status === 200) {
+                        const rawUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/${fileName}`;
+                        resolve(rawUrl);
+                    } else {
+                        reject(new Error('上传失败'));
+                    }
+                } catch(err) {
+                    reject(err);
+                }
+            };
+            reader.onerror = () => reject(new Error('读取文件失败'));
+            reader.readAsDataURL(file);
+        });
+    }
 
     function toggleEmojiPicker() {
         const dropdown = document.getElementById('emojiDropdown');
@@ -252,88 +371,8 @@
         document.getElementById('audioInput').value = '';
     }
 
-    function getCloudConfig() {
-        const saved = localStorage.getItem(CLOUD_CONFIG_KEY);
-        return saved ? JSON.parse(saved) : null;
-    }
-
-    async function webdavRequest(method, path, content = null, isBinary = false) {
-        const config = getCloudConfig();
-        if (!config || !config.user || !config.pass) throw new Error('未配置坚果云');
-        const fullUrl = `${config.url.replace(/\/$/, '')}${path}`;
-        const options = { method: method, headers: { 'Authorization': 'Basic ' + btoa(`${config.user}:${config.pass}`) } };
-        if (content !== null) {
-            if (isBinary) { options.body = content; }
-            else { options.headers['Content-Type'] = 'application/json'; options.body = content; }
-        }
-        return await fetch(fullUrl, options);
-    }
-
-    async function uploadMediaToCloud() {
-        if (!pendingMedia.file) return null;
-        const config = getCloudConfig();
-        if (!config) { showStatus('请先配置坚果云', 'error'); return null; }
-        const fileName = `media/${Date.now()}_${pendingMedia.file.name}`;
-        const reader = new FileReader();
-        return new Promise((resolve, reject) => {
-            reader.onload = async function(e) {
-                try {
-                    const base64Data = e.target.result.split(',')[1];
-                    const response = await webdavRequest('PUT', `/${fileName}`, base64Data, true);
-                    if (response.status === 201 || response.status === 204) {
-                        resolve(`${config.url.replace(/\/$/, '')}/${fileName}`);
-                    } else { reject(new Error('上传失败')); }
-                } catch(err) { reject(err); }
-            };
-            reader.onerror = () => reject(new Error('读取失败'));
-            reader.readAsDataURL(pendingMedia.file);
-        });
-    }
-
-    async function uploadToCloud() {
-        const config = getCloudConfig();
-        if (!config) return false;
-        try { await webdavRequest('PUT', '/agit_data.json', JSON.stringify(allData)); return true; } catch(e) { return false; }
-    }
-
-    async function downloadFromCloud() {
-        const config = getCloudConfig();
-        if (!config) return false;
-        try {
-            const response = await webdavRequest('GET', '/agit_data.json');
-            if (response.status === 200) { allData = await response.json(); saveAllData(); showStatus('☁️ 同步成功', 'success'); return true; }
-        } catch(e) { return false; }
-        return false;
-    }
-
-    async function syncFromCloud() {
-        if (isSyncing) return;
-        isSyncing = true;
-        showStatus('🔄 同步中...', 'info');
-        await downloadFromCloud();
-        renderStatusList();
-        isSyncing = false;
-    }
-
-    async function testAndSaveCloud() {
-        const url = document.getElementById('webdavUrl').value;
-        const user = document.getElementById('webdavUser').value;
-        const pass = document.getElementById('webdavPass').value;
-        if (!url || !user || !pass) { document.getElementById('cloudStatus').innerHTML = '❌ 请填写完整'; return; }
-        document.getElementById('cloudStatus').innerHTML = '🔄 测试中...';
-        try {
-            const response = await fetch(`${url.replace(/\/$/, '')}/`, { method: 'PROPFIND', headers: { 'Authorization': 'Basic ' + btoa(`${user}:${pass}`) } });
-            if (response.status === 200 || response.status === 207) {
-                localStorage.setItem(CLOUD_CONFIG_KEY, JSON.stringify({ url, user, pass }));
-                document.getElementById('cloudStatus').innerHTML = '✅ 配置成功！';
-                showStatus('☁️ 配置成功', 'success');
-                await syncFromCloud();
-            } else { document.getElementById('cloudStatus').innerHTML = '❌ 认证失败'; }
-        } catch(e) { document.getElementById('cloudStatus').innerHTML = `❌ 失败`; }
-    }
-
     function loadAllData() { const stored = localStorage.getItem(STORAGE_KEY); allData = stored ? JSON.parse(stored) : {}; }
-    function saveAllData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(allData)); setTimeout(() => uploadToCloud(), 300); }
+    function saveAllData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(allData)); setTimeout(() => uploadToGitHub(), 500); }
     function getDayData() { if (!allData[currentDate]) allData[currentDate] = { statuses: [] }; return allData[currentDate]; }
     function saveDayData(data) { allData[currentDate] = data; saveAllData(); }
 
@@ -342,8 +381,12 @@
         let mediaUrl = null;
         if (pendingMedia.file) {
             showStatus('上传媒体中...', 'info');
-            try { mediaUrl = await uploadMediaToCloud(); }
-            catch(e) { showStatus('上传失败', 'error'); return; }
+            try {
+                mediaUrl = await uploadMediaToGitHub(pendingMedia.file, pendingMedia.type);
+            } catch(e) {
+                showStatus('媒体上传失败: ' + e.message, 'error');
+                return;
+            }
         }
         const dayData = getDayData();
         dayData.statuses.unshift({ id: Date.now(), content: content || '', time: new Date().toLocaleString(), likes: 0, liked: false, comments: [], media: mediaUrl ? { type: pendingMedia.type, url: mediaUrl } : null });
@@ -351,7 +394,7 @@
         document.getElementById('newStatusInput').value = '';
         clearPendingMedia();
         renderStatusList();
-        showStatus('✅ 已发布', 'success');
+        showStatus('✅ 已发布并同步', 'success');
     }
 
     function startEditStatus(id) { editingStatusId = id; renderStatusList(); }
@@ -392,19 +435,16 @@
     function changeDate() { const nd = document.getElementById('datePicker').value; if(nd){ currentDate = nd; updateDateDisplay(); renderStatusList(); } closeDateModal(); }
     function openDateModal() { document.getElementById('datePicker').value = currentDate; document.getElementById('dateModal').style.display = 'flex'; }
     function closeDateModal() { document.getElementById('dateModal').style.display = 'none'; }
-    function openCloudModal() { document.getElementById('cloudModal').style.display = 'flex'; }
-    function closeCloudModal() { document.getElementById('cloudModal').style.display = 'none'; }
     function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
     function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
     function showStatus(msg, type) { const div = document.getElementById('statusMsg'); div.textContent = msg; div.className = `status-msg status-${type}`; div.style.display = 'block'; setTimeout(() => div.style.display = 'none', 2500); }
     function getStoredPassword() { const p = localStorage.getItem(PASSWORD_KEY); return p === null ? DEFAULT_PASSWORD : p; }
-    function checkLogin() { const input = document.getElementById('loginPassword').value; const stored = getStoredPassword(); if(stored === '' || input === stored){ document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('mainContent').style.display = 'block'; loadAllData(); updateDateDisplay(); renderStatusList(); setTimeout(() => { if(getCloudConfig()) syncFromCloud(); }, 500); } else { document.getElementById('loginError').innerText = '密码错误'; } }
+    function checkLogin() { const input = document.getElementById('loginPassword').value; const stored = getStoredPassword(); if(stored === '' || input === stored){ document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('mainContent').style.display = 'block'; loadAllData(); updateDateDisplay(); renderStatusList(); setTimeout(() => { if(GITHUB_TOKEN && GITHUB_TOKEN !== "你的Token") syncWithGitHub(); }, 500); } else { document.getElementById('loginError').innerText = '密码错误'; } }
     function logout() { editingStatusId = null; document.getElementById('mainContent').style.display = 'none'; document.getElementById('loginOverlay').style.display = 'flex'; document.getElementById('loginPassword').value = ''; document.getElementById('loginError').innerText = ''; }
     function changePassword() { const np = document.getElementById('newPassword').value; const cp = document.getElementById('confirmPassword').value; if(!np || np !== cp || np.length < 4){ showStatus('密码至少4位且一致', 'error'); return; } localStorage.setItem(PASSWORD_KEY, np); closeSettings(); showStatus('密码修改成功', 'success'); setTimeout(() => { if(confirm('是否退出用新密码登录？')) logout(); }, 1000); }
     function disablePassword() { if(confirm('确定取消密码？')){ localStorage.setItem(PASSWORD_KEY, ''); closeSettings(); showStatus('密码已取消', 'success'); setTimeout(() => logout(), 1000); } }
-    function checkAutoLogin() { if(getStoredPassword() === ''){ document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('mainContent').style.display = 'block'; loadAllData(); updateDateDisplay(); renderStatusList(); setTimeout(() => { if(getCloudConfig()) syncFromCloud(); }, 500); } }
+    function checkAutoLogin() { if(getStoredPassword() === ''){ document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('mainContent').style.display = 'block'; loadAllData(); updateDateDisplay(); renderStatusList(); setTimeout(() => { if(GITHUB_TOKEN && GITHUB_TOKEN !== "你的Token") syncWithGitHub(); }, 500); } }
     document.getElementById('dateModal').addEventListener('click', e => { if(e.target === document.getElementById('dateModal')) closeDateModal(); });
-    document.getElementById('cloudModal').addEventListener('click', e => { if(e.target === document.getElementById('cloudModal')) closeCloudModal(); });
     document.getElementById('settingsModal').addEventListener('click', e => { if(e.target === document.getElementById('settingsModal')) closeSettings(); });
     checkAutoLogin();
 </script>
